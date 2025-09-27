@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rayza Machine</title>
+  <style>
+    /*Cor do fundo*/
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh; /*Viewport*/
+      background: #111;
+      overflow: hidden; /*se aparece barra lateral ou n*/
+    }
+
+    /* container para sobreposição */
+    .container {
+      position: relative;
+      width: 650px; /* espaço suficiente pros dois cards lado a lado */
+      height: 450px;
+    }
+
+    /* estilo geral dos cards */
+    .card {
+      position: absolute;
+      top: 0;
+      width: 310px;
+      height: 450px;
+      padding: 1.3%;
+      border-radius: 25px;
+      background-color: #a87ce8;
+      border: 5px solid #6a0dad;
+      box-shadow: 5px 5px 0 #7b2cbf;
+      transition: all 0.6s ease; /*tempo da transição*/
+    }
+
+    /* calculadora sempre começa no centro */
+    #calculadora {
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    /* saída começa escondida, embaixo da calculadora */
+    #saida {
+      left: 50%;
+      transform: translateX(-50%);  /* ponto de ref do centro da tela */
+      opacity: 0;  /* começa invisivel */
+      z-index: 1;  /* ordem de empilhamento dos elementos, saida atras da calculadora*/
+    }
+
+    /* quando ativar, move para a direita */
+    #saida.show {
+      left: calc(50% + 350px); /* medida ate a esquerda da tela */
+      transform: translateX(-50%); 
+      opacity: 1;
+    }
+
+    .tela {
+      width: 300px;
+      height: 100px;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      border-radius: 15px;
+      background-color: #88F8D8;
+      border: 5px solid #007EA8;
+      box-shadow: 5px 5px 0 #7b2cbf;
+    }
+
+    input[type="text"] {
+      width: 150px;
+      padding: 10px;
+      padding-top: 65px;
+      border: 2px solid #88F8D8;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #007EA8;
+      background: #88F8D8;
+      outline: none;
+      align-content: end;
+    }
+
+    select {
+      height: 50px;
+      border: 2px solid #88F8D8;
+      padding-top: 8px;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #777875;
+      background: #88F8D8;
+      outline: none;
+      align-content: end;
+    }
+
+    h4 {
+      font-weight: bold;
+      color: white;
+      text-shadow: 5px 5px 3px #7b2cbf;
+      font-size: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .check-label,
+    .check-label2 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      width: 120px;
+      height: 60px;
+      font-weight: bold;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+      user-select: none; /*n permite selecionar o texto*/
+      box-shadow: 5px 5px 0 #7b2cbf;
+    }
+
+    .check-label {
+      background: #A4BCFF;
+      color: #2115C2;
+      border: 4px solid #2115C2;
+    }
+
+    .check-label:hover {
+      background: #eefc57;
+      border-color: #ff7b00;
+    }
+
+    input[type="checkbox"]:checked+.check-label {
+      background: #6a0dad;
+      border-color: #a87ce8;
+      color: #fff;
+    }
+
+    .check-label2 {
+      background: #FF63ED;
+      color: #E207B9;
+      border: 4px solid #E207B9;
+    }
+
+    .check-label2:hover {
+      background: #ff7b00;
+      border-color: #eefc57;
+    }
+
+    input[type="checkbox"]:checked+.check-label2 {
+      background: #6a0dad;
+      border-color: #a87ce8;
+      color: #fff;
+    }
+
+    button {
+      background-color: #eefc57;
+      border: #fcaf57;
+      border-radius: 15px;
+      box-shadow: 5px 5px 0 #7b2cbf;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #6a0dad;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- calculadora -->
+    <div id="calculadora" class="card">
+      <div class="tela">
+        <input type="text" id="inputValue" placeholder="Digite o valor:">
+        <select id="inputBase">
+          <option value="decimal">Decimal</option>
+          <option value="hexadecimal">Hexadecimal</option>
+          <option value="octal">Octal</option>
+          <option value="binario">Binário</option>
+        </select>
+      </div>
+      <h4>Machine Calculadora</h4>
+
+      <div style="display: flex; justify-content: space-around; flex-direction: row; padding-top: 1px;">
+        <div>
+          <input type="checkbox" id="convertDecimal">
+          <label for="convertDecimal" class="check-label"> Decimal </label>
+        </div>
+        <div>
+          <input type="checkbox" id="convertHexadecimal">
+          <label for="convertHexadecimal" class="check-label2"> Hexadecimal </label>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-around; flex-direction: row; padding-top: 50px;">
+        <div>
+          <input type="checkbox" id="convertOctal">
+          <label for="convertOctal" class="check-label2"> Octal </label>
+        </div>
+        <div>
+          <input type="checkbox" id="convertBinario">
+          <label for="convertBinario" class="check-label"> Binário </label>
+        </div>
+      </div>
+
+      <div style="margin-top:20px; display: flex; justify-content: center;">
+        <button onclick="converter()">Converter</button>
+      </div>
+    </div>
+
+    <!-- saída -->
+    <div id="saida" class="card">
+      <div id="output" style="color: white; margin-top:15px;"></div>
+    </div>
+  </div>
+
+  <script>
+    function converter() {
+      let saida = document.getElementById("saida");
+      saida.classList.add("show");
+
+      var inputValue = document.getElementById('inputValue').value;
+      var inputBase = document.getElementById('inputBase').value;
+
+      if (!validarEntrada(inputValue, inputBase)) {
+        alert('Por favor, insira um número válido para a base selecionada.');
+        return;
+      }
+
+      var decimalValue = parseInt(
+        inputValue,
+        inputBase === 'hexadecimal' ? 16 :
+          inputBase === 'octal' ? 8 :
+            inputBase === 'binario' ? 2 : 10
+      );
+
+      var outputHTML = '';
+
+      if (document.getElementById('convertDecimal').checked) {
+        outputHTML += `<p>Decimal: ${decimalValue}</p>`;
+      }
+      if (document.getElementById('convertHexadecimal').checked) {
+        outputHTML += `<p>Hexadecimal: ${decimalValue.toString(16).toUpperCase()}</p>`;
+      }
+      if (document.getElementById('convertOctal').checked) {
+        outputHTML += `<p>Octal: ${decimalValue.toString(8)}</p>`;
+      }
+      if (document.getElementById('convertBinario').checked) {
+        outputHTML += `<p>Binário: ${decimalValue.toString(2)}</p>`;
+      }
+
+      document.getElementById('output').innerHTML = outputHTML;
+    }
+
+    function validarEntrada(inputValue, inputBase) {
+      var validChars = '';
+      if (inputBase === 'decimal') validChars = '0123456789';
+      else if (inputBase === 'hexadecimal') validChars = '0123456789ABCDEFabcdef';
+      else if (inputBase === 'octal') validChars = '01234567';
+      else if (inputBase === 'binario') validChars = '01';
+
+      for (var i = 0; i < inputValue.length; i++) {
+        if (validChars.indexOf(inputValue[i]) === -1) {
+          return false;
+        }
+      }
+      return true;
+    }
+  </script>
+</body>
+
+</html>
